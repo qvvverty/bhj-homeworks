@@ -7,6 +7,9 @@ const timerId = setInterval(() => {
   if (timer.textContent == 0) {
     alert('Вы победили в конкурсе!');
     clearInterval(timerId);
+
+    // document.getElementById('download-link').click();
+    document.location = './file.docx';
   }
 }, 1000);
 
@@ -14,8 +17,6 @@ const timer2 = document.getElementById('timer2');
 const timeSplitted = timer2.textContent.split(':');
 
 const time = new Date();
-// const time = Date.parse('1970/01/01T' + timer2.textContent);
-// console.log(time);
 time.setHours(parseInt(timeSplitted[0]), parseInt(timeSplitted[1]), parseInt(timeSplitted[2]));
 const timerId2 = setInterval(() => {
   time.setMilliseconds(-1);
