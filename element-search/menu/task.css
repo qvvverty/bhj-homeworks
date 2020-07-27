@@ -4,6 +4,7 @@ body {
   font-family: Helvetica;
   font-weight: 300;
 }
+
 .menu {
   display: flex;
   list-style-type: none;
@@ -12,6 +13,10 @@ body {
   box-sizing: border-box;
   padding: 10px 20px;
   margin: 0;
+}
+
+.menu_second {
+  margin-top: 300px;
 }
 
 .menu__link {
