@@ -9,8 +9,11 @@ function close() {
 
 const modalClose = document.getElementsByClassName('modal__close_times');
 modalClose[0].onclick = close;
-modalClose[1].onclick = () => {close.bind(modalClose[1])(); modalClose[0].click()};
+modalClose[1].onclick = close;
 
 const modalSuccess = document.getElementById('modal_success');
 const showSuccess = document.querySelector('a.show-success');
-showSuccess.onclick = () => modalSuccess.classList.add('modal_active');
+showSuccess.onclick = () => {
+  modalClose[0].click();
+  modalSuccess.classList.add('modal_active');
+};
