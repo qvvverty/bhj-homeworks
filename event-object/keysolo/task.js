@@ -8,6 +8,9 @@ class Game {
     this.reset();
 
     this.registerEvents();
+
+    this.timerAbort;
+    this.timer();
   }
 
   reset() {
@@ -17,13 +20,9 @@ class Game {
   }
 
   registerEvents() {
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода слова вызываем this.success()
-      При неправильном вводе символа - this.fail();
-     */
+    document.addEventListener('keypress', (event) => {
+      event.key.toLowerCase() === this.currentSymbol.textContent.toLowerCase() ? this.success() : this.fail();
+    });
   }
 
   success() {
@@ -38,6 +37,7 @@ class Game {
       this.reset();
     }
     this.setNewWord();
+    this.timer();
   }
 
   fail() {
@@ -46,6 +46,7 @@ class Game {
       this.reset();
     }
     this.setNewWord();
+    this.timer();
   }
 
   setNewWord() {
@@ -83,6 +84,21 @@ class Game {
     this.wordElement.innerHTML = html;
 
     this.currentSymbol = this.wordElement.querySelector('.symbol_current');
+  }
+
+  timer() {
+    clearInterval(this.timerAbort);
+    let seconds = document.querySelector('div.word').textContent.length;
+    let display = document.getElementById('timer');
+    display.textContent = seconds;
+    this.timerAbort = setInterval(() => {
+      seconds -= 1;
+      display.textContent = seconds;
+      if (seconds === 0) {
+        clearInterval(this.timerAbort);
+        this.fail();
+      }
+    }, 1000);
   }
 }
 
