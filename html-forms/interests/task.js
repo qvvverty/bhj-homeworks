@@ -1,26 +1,7 @@
 'use strict';
 
-// document.addEventListener('click', function(click) {
-//   if (click.target.classList.contains('interest__check')) {
-//     const sameLevelElements = click.target.closest('.interest').parentElement.children;
-//     let checkedCounter = 0;
-//     for (const li of sameLevelElements) {
-//       if (li.querySelector('.interest__check').checked) {
-//         checkedCounter += 1;
-//       }
-//     }
-//     console.log(checkedCounter);
-//     if (checkedCounter === sameLevelElements.length) {
-//       click.target.closest('.interest').parentElement.previousElementSibling.querySelector('.interest__check').checked = true;
-//     } else {
-//       click.target.closest('.interest').parentElement.previousElementSibling.querySelector('.interest__check').checked = false;
-//     }
-//   }
-// });
-
 document.addEventListener('change', change => {
   if (change.target.classList.contains('interest__check')) {
-    // Все нисходящие
     const allDescendingCheckboxes = change.target.closest('.interest').querySelectorAll('.interest__check');
     if (change.target.checked) {
       for (const checkbox of allDescendingCheckboxes) {
@@ -29,23 +10,30 @@ document.addEventListener('change', change => {
     } else {
       for (const checkbox of allDescendingCheckboxes) {
         checkbox.checked = false;
+        checkbox.indeterminate = false;
       }
     }
-    // Закончили с нисходящими
 
     function indeterminateAscending(elem) {
-      if (elem.closest('.interests')) {
+      if (!elem.closest('.interests').classList.contains('interests_main')) {
         const nearestAscending = elem.closest('.interests').parentElement;
-        console.log(nearestAscending);
         const neighbors = nearestAscending.querySelector('.interests').children;
         let checkedCounter = 0;
+        let isIndeterminate = false;
         for (const neighbor of neighbors) {
-          if (neighbor.querySelector('.interest__check').checked) {
+          if (neighbor.querySelector('.interest__check').indeterminate) {
+            isIndeterminate = true;
+            break;
+          }
+          if (neighbor.querySelector('.interest__check').checked || neighbor.querySelector('.interest__check').indeterminate) {
             checkedCounter += 1;
           }
         }
-        console.log(checkedCounter, neighbors.length)
-        if (checkedCounter >= 1 && checkedCounter < neighbors.length) {
+
+        if (isIndeterminate === true) {
+          nearestAscending.querySelector('.interest .interest__check').checked = false;
+          nearestAscending.querySelector('.interest__check').indeterminate = true;
+        } else if (checkedCounter >= 1 && checkedCounter < neighbors.length) {
           nearestAscending.querySelector('.interest .interest__check').checked = false;
           nearestAscending.querySelector('.interest__check').indeterminate = true;
         } else if (checkedCounter === neighbors.length) {
@@ -54,14 +42,12 @@ document.addEventListener('change', change => {
         } else if (checkedCounter === 0) {
           nearestAscending.querySelector('.interest .interest__check').indeterminate = false;
           nearestAscending.querySelector('.interest .interest__check').checked = false;
-      }
-      indeterminateAscending(nearestAscending);
+        }
+
+        indeterminateAscending(nearestAscending.querySelector('.interest__check'));
       }
     }
 
     indeterminateAscending(change.target);
-    // if (change.target.closest('.interests').parentElement) {
-    //   indeterminateAscending(change.target);
-    // }
   }
 });
