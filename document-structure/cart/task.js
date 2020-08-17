@@ -8,14 +8,43 @@ function toggleCartVisibility() {
   }
 }
 
-const cartProducts = document.querySelector('div.cart__products');
+function addToCart(id, imgSrc, qty) {
+  const cartProducts = document.querySelector('div.cart__products');
+  const cartProduct = document.createElement('div');
+  cartProduct.innerHTML = `
+    <img class="cart__product-image" src="">
+    <a href="#" class="cart__product-delete" title="Удалить товар из корзины">&times;</a>
+    <div class="cart__product-count"></div>
+  `
+  cartProduct.classList.add('cart__product');
+  cartProduct.dataset.id = id;
+  cartProduct.querySelector('img').src = imgSrc;
+  cartProduct.lastElementChild.innerText = qty;
+
+  cartProducts.appendChild(cartProduct);
+}
 
 function saveCart() {
-  localStorage.setItem('cart', cartProducts.innerHTML);
+  const cartArr = [];
+  const cartProducts = document.getElementsByClassName('cart__product');
+  for (const product of cartProducts) {
+    cartArr.push({
+      id: product.dataset.id,
+      imgSrc: product.querySelector('img').src,
+      qty: product.lastElementChild.innerText,
+    });
+  }
+
+  localStorage.setItem('cart', JSON.stringify(cartArr));
 }
 
 function loadCart() {
-  cartProducts.innerHTML = localStorage.getItem('cart');
+  if (localStorage.getItem('cart')) {
+    const cartArr = JSON.parse(localStorage.getItem('cart'));
+    for (const product of cartArr) {
+      addToCart(product.id, product.imgSrc, product.qty);
+    }
+  }
 }
 
 loadCart();
@@ -49,18 +78,7 @@ document.addEventListener('click', click => {
       const newProdInCartQty = parseInt(foundInCart.lastElementChild.innerText) + parseInt(click.target.parentElement.querySelector('div.product__quantity-value').innerText);
       foundInCart.lastElementChild.innerText = newProdInCartQty;
     } else {
-      const cartProduct = document.createElement('div');
-      cartProduct.innerHTML = `
-        <img class="cart__product-image" src="">
-        <a href="#" class="cart__product-delete" title="Удалить товар из корзины">&times;</a>
-        <div class="cart__product-count"></div>
-      `
-      cartProduct.classList.add('cart__product');
-      cartProduct.dataset.id = click.target.closest('div.product').dataset.id;
-      cartProduct.querySelector('img').src = click.target.closest('div.product').querySelector('img.product__image').src;
-      cartProduct.lastElementChild.innerText = click.target.parentElement.querySelector('div.product__quantity-value').innerText;
-
-      cartProducts.appendChild(cartProduct);
+      addToCart(click.target.closest('div.product').dataset.id, click.target.closest('div.product').querySelector('img.product__image').src, click.target.parentElement.querySelector('div.product__quantity-value').innerText);
     }
     
     toggleCartVisibility();

@@ -4,34 +4,37 @@ document.addEventListener('click', click => {
   if (click.target.classList.contains('has-tooltip')) {
     click.preventDefault();
 
-    const tooltip = document.createElement('div');
-    tooltip.classList.add('tooltip');
-    tooltip.innerText = click.target.title;
-    tooltip.style = 'display: block; position: absolute;';
+    if (click.target.nextElementSibling !== null && click.target.nextElementSibling.classList.contains('tooltip')) {
+      click.target.nextElementSibling.remove();
+    } else {
+      if (document.querySelector('div.tooltip')) {
+        document.querySelector('div.tooltip').remove();
+      }
 
-    if (document.querySelector('div.tooltip')) {
-      document.querySelector('div.tooltip').remove();
-    }
+      const tooltip = document.createElement('div');
+      tooltip.classList.add('tooltip');
+      tooltip.innerText = click.target.title;
+      tooltip.style = 'display: block; position: absolute;';
+      click.target.insertAdjacentElement('afterEnd', tooltip);
 
-    click.target.insertAdjacentElement('afterEnd', tooltip);
-
-    const linkPosition = click.target.getBoundingClientRect();
-    const tooltipPosition = tooltip.getBoundingClientRect();
-    switch (click.target.dataset.position){
-      case 'top':
-        tooltip.style.top = linkPosition.top - tooltipPosition.height + pageYOffset + 'px';
-        tooltip.style.left = linkPosition.left + 'px';
-        break;
-      case 'left':
-        tooltip.style.top = linkPosition.top + pageYOffset - (tooltipPosition.height - linkPosition.height) / 2 + 'px';
-        tooltip.style.left = linkPosition.left - tooltipPosition.width + 'px';
-        break;
-      case 'right':
-        tooltip.style.top = linkPosition.top + pageYOffset - (tooltipPosition.height - linkPosition.height) / 2 + 'px';
-        tooltip.style.left = linkPosition.left + linkPosition.width + 'px';
-        break;
-      default:
-        tooltip.style.left = linkPosition.left + 'px';
+      const linkPosition = click.target.getBoundingClientRect();
+      const tooltipPosition = tooltip.getBoundingClientRect();
+      switch (click.target.dataset.position) {
+        case 'top':
+          tooltip.style.top = linkPosition.top - tooltipPosition.height + pageYOffset + 'px';
+          tooltip.style.left = linkPosition.left + 'px';
+          break;
+        case 'left':
+          tooltip.style.top = linkPosition.top + pageYOffset - (tooltipPosition.height - linkPosition.height) / 2 + 'px';
+          tooltip.style.left = linkPosition.left - tooltipPosition.width + 'px';
+          break;
+        case 'right':
+          tooltip.style.top = linkPosition.top + pageYOffset - (tooltipPosition.height - linkPosition.height) / 2 + 'px';
+          tooltip.style.left = linkPosition.left + linkPosition.width + 'px';
+          break;
+        default:
+          tooltip.style.left = linkPosition.left + 'px';
+      }
     }
   }
 });

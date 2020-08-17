@@ -1,11 +1,34 @@
 'use strict';
 
 function saveTasks() {
-  localStorage.setItem('tasks', document.getElementById('tasks__list').outerHTML);
+  const tasksArr = [];
+  const tasks = document.getElementsByClassName('task__title');
+  for (let i = 0; i < tasks.length; i++) {
+    tasksArr[i] = tasks[i].innerText;
+  }
+  localStorage.setItem('tasks', JSON.stringify(tasksArr));
 }
 
 function loadTasks() {
-  document.getElementById('tasks__list').outerHTML = localStorage.getItem('tasks');
+  if (localStorage.getItem('tasks')) {
+    const tasksArr = JSON.parse(localStorage.getItem('tasks'));
+    for (const task of tasksArr) {
+      addTask(task);
+    }
+  }
+}
+
+function addTask(taskContent) {
+  const newTask = document.createElement('div');
+  newTask.innerHTML = `
+    <div class="task__title">
+      ${taskContent}
+    </div>
+    <a href="#" class="task__remove">&times;</a>
+  `;
+  newTask.classList.add('task');
+
+  document.getElementById('tasks__list').appendChild(newTask);
 }
 
 loadTasks();
@@ -14,20 +37,11 @@ document.addEventListener('click', click => {
   if (click.target.id === 'tasks__add') {
     click.preventDefault();
     
-    if (document.getElementById('task__input').value) {
-      const newTask = document.createElement('div');
-      newTask.innerHTML = `
-        <div class="task__title">
-          ${document.getElementById('task__input').value}
-        </div>
-        <a href="#" class="task__remove">&times;</a>
-      `;
-      newTask.classList.add('task');
-
-      document.getElementById('tasks__list').appendChild(newTask);
-
+    let taskInputFieldValue = document.getElementById('task__input').value;
+    if (taskInputFieldValue) {
+      addTask(taskInputFieldValue);
+      taskInputFieldValue = '';
       document.getElementById('task__input').value = '';
-      
       saveTasks();
     }
   }
