@@ -1,0 +1,10 @@
+.textarea__clear {
+  content: "&times;";
+  position: absolute;
+  top: -2px;
+
+  font-size: 35px;
+  font-weight: 900;
+  text-decoration: none;
+  color: red;
+}
