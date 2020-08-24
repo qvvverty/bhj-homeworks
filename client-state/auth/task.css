@@ -28,6 +28,23 @@ body {
   cursor: pointer;
 }
 
+.logout__btn {
+  display: none;
+}
+
+.logout__btn_active {
+  display: block;
+}
+
+.login_failed {
+  display: none;
+  color: red;
+}
+
+.login_failed_active {
+  display: block;
+}
+
 .welcome {
   display: none;
 }
